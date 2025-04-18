@@ -1,5 +1,5 @@
-use actix_web::{get, App, HttpResponse, HttpServer, Responder};
-use chrono::{Utc, Local};
+use actix_web::{App, HttpResponse, HttpServer, Responder, get};
+use chrono::{Datelike, Local, Utc};
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -8,8 +8,7 @@ async fn hello() -> impl Responder {
 
 #[get("/time")]
 async fn time() -> impl Responder {
-    let t: i64 = Utc::now()
-        .timestamp_millis();
+    let t: i64 = Utc::now().timestamp_millis();
     HttpResponse::Ok()
         .content_type("application/json")
         .body(format!("{{\"t\":{}}}", t))
@@ -17,12 +16,11 @@ async fn time() -> impl Responder {
 
 #[get("/localtime")]
 async fn localtime() -> impl Responder {
-    let mut l = Local::now()
-        .timestamp_millis();
-    
+    let mut l = Local::now().timestamp_millis();
+
     let offset = Local::now().offset().local_minus_utc() * 1000;
     l = l + offset as i64;
-    
+
     HttpResponse::Ok()
         .content_type("application/json")
         .body(format!("{{\"t\":{}}}", l))
@@ -53,10 +51,14 @@ async fn garbage() -> impl Responder {
     let local = Local::now().timestamp_millis();
     let days_until_garbage = get_days_until_garbage(local);
     let days_until_recycling = get_days_until_recycling(local);
-    
+    let week_number = Local::now().iso_week().week();
+
     HttpResponse::Ok()
-    .content_type("application/json")
-    .body(format!("{{\"t\":{},\"g\":{},\"r\":{}}}", local, days_until_garbage, days_until_recycling))
+        .content_type("application/json")
+        .body(format!(
+            "{{\"t\":{},\"g\":{},\"r\":{},\"w\":{}}}",
+            local, days_until_garbage, days_until_recycling, week_number
+        ))
 }
 
 #[actix_web::main]
