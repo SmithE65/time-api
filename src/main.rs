@@ -29,16 +29,19 @@ const MS_PER_HOUR: i64 = 60 * 60 * 1000;
 const MS_PER_DAY: i64 = MS_PER_HOUR * 24;
 const RECYCLING_PERIOD: i64 = 14;
 const GARBAGE_PERIOD: i64 = 7;
+const WEEK: i64 = 7;
 const THURSDAY: i64 = 4;
 const TUESDAY: i64 = 2;
+const EPOCH_OFFSET: i64 = 4;
+const RECYCLING_OFFSET: i64 = EPOCH_OFFSET + WEEK;
 
 fn get_days_until_garbage(ms_since_epoch: i64) -> i64 {
-    let day_of_week = ((ms_since_epoch / MS_PER_DAY) + GARBAGE_PERIOD) % GARBAGE_PERIOD;
+    let day_of_week = ((ms_since_epoch / MS_PER_DAY) + EPOCH_OFFSET) % GARBAGE_PERIOD;
     (GARBAGE_PERIOD + THURSDAY - day_of_week) % GARBAGE_PERIOD
 }
 
 fn get_days_until_recycling(ms_since_epoch: i64) -> i64 {
-    let day_of_biweek = ((ms_since_epoch / MS_PER_DAY) + RECYCLING_PERIOD) % RECYCLING_PERIOD;
+    let day_of_biweek = ((ms_since_epoch / MS_PER_DAY) + RECYCLING_OFFSET) % RECYCLING_PERIOD;
     (RECYCLING_PERIOD + TUESDAY - day_of_biweek) % RECYCLING_PERIOD
 }
 
