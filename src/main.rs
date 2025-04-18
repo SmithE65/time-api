@@ -25,7 +25,7 @@ async fn localtime() -> impl Responder {
     
     HttpResponse::Ok()
         .content_type("application/json")
-        .body(format!("{{\"l\":{}}}", l))
+        .body(format!("{{\"t\":{}}}", l))
 }
 
 const MS_PER_HOUR: i64 = 60 * 60 * 1000;
