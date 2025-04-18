@@ -11,18 +11,21 @@ async fn time() -> impl Responder {
     let t: i64 = Utc::now()
         .timestamp_millis();
     HttpResponse::Ok()
-    .content_type("application/json")
-    .body(format!("{{\"t\":{}}}", t))
+        .content_type("application/json")
+        .body(format!("{{\"t\":{}}}", t))
 }
 
 #[get("/localtime")]
 async fn localtime() -> impl Responder {
-    let t = Local::now()
+    let mut l = Local::now()
         .timestamp_millis();
     
+    let offset = Local::now().offset().local_minus_utc() * 1000;
+    l = l + offset as i64;
+    
     HttpResponse::Ok()
-    .content_type("application/json")
-    .body(format!("{{\"t\":{}}}", t))
+        .content_type("application/json")
+        .body(format!("{{\"t\":{},\"l\":{}}}", t, l))
 }
 
 const MS_PER_HOUR: i64 = 60 * 60 * 1000;
